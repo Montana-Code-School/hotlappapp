@@ -24,7 +24,9 @@
         </nav>
 
         <!-- Masthead -->
-  {!! $club_members !!}
+        @foreach ($club_members as $member)
+          <p>This is a club member in da club:  {{ $member['id'] }}</p>
+        @endforeach
  
   <!-- Footer -->
   <footer class="footer bg-light">
