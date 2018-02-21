@@ -16,6 +16,6 @@ Route::get('/', function () {
 });
 
 Route::get('login/strava', 'Auth\LoginController@redirectToProvider')->name('stravalogin');
-Route::get('login/strava/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('leaderboard', 'Auth\LoginController@handleProviderCallback');
 
 

@@ -1,10 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+// include 'vendor/autoload.php';
+use Pest;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Socialite;
+use Strava\API\Client;
+use Strava\API\Exception;
+use Strava\API\Service\REST;
 
 class LoginController extends Controller
 {
@@ -54,7 +58,30 @@ class LoginController extends Controller
     public function handleProviderCallback()
     {
         $user = Socialite::driver('strava')->user();
-        dd($user);
+        // dd($user->token);
+        try {
+            $adapter = new Pest('https://www.strava.com/api/v3');
+            $service = new REST($user->token, $adapter);  // Define your user token here.
+            $client = new Client($service);
+        
+            // $athlete = $client->getAthlete();
+            // print_r($athlete);
+        
+            // $activities = $client->getAthleteActivities();
+            // print_r($activities);
+        
+            // $club = $client->getClub(432809);
+            // print_r($club);
+            
+            $members = $client->getClubMembers(432809);
+            // print_r($members);
+
+            return view('leaderboard', ['club_members' => $members]);
+
+        } catch(Exception $e) {
+            print $e->getMessage();
+        }
+        // dd($user);
 
         // $user->token;
     }
