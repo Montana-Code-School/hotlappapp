@@ -74,9 +74,11 @@ class LoginController extends Controller
             // print_r($club);
             
             $members = $client->getClubMembers(432809);
+            $member_activities = $client->getClubActivities(432809);
             //loop over each member to get activity and pass to leaderboard
+
+            return view('leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
             
-            // $member_activity = $client->getClubActivities($members);
             //      foreach($member_activity as $activity)
             //         {
             //             $activity = User::find($activity->created_by);
@@ -84,7 +86,7 @@ class LoginController extends Controller
             //         }
             // print_r($member_activity);
 
-            return view('leaderboard', ['club_members' => $members]);
+            
 
         } catch(Exception $e) {
             print $e->getMessage();
