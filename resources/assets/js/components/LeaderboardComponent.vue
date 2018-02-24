@@ -1,3 +1,5 @@
+
+
 <template>
     <div>
        
@@ -10,19 +12,20 @@
                         <th>Pic</th>
                         <th>Name</th>
                         <th>Route Name</th>
-                        <th>Distance</th>
+                        <th>Total Distance</th>
                         <th>Date</th>
+                        <th>Total Laps</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>Jill</td>
-                        <td>Jill</td>
-                        <td>Jill</td>
-                        <td>Jill</td>
-                        <td>Jill</td>
+                    <tr v-for='activity in activities'>
+                        <td >{{ activity.profile }}</td>
+                        <td>{{ activity.athlete.firstname }}</td>
+                        <td>{{ activity.name }}</td>
+                        <td>{{ activity.distance }}</td>
+                        <td>{{ activity.start_date_local }}</td>
+                        <td> count </td>
 
-                       
                     </tr>
                     </tbody>
                 </table>
@@ -33,8 +36,9 @@
 
 <script>
     export default {
+        props: ['activities'],
         mounted() {
-            console.log('Component mounted.')
+            console.log(this.activities)
         }
     }
 </script>

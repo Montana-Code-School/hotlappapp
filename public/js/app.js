@@ -13804,7 +13804,7 @@ window.Vue = __webpack_require__(36);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('leaderboard-component', __webpack_require__(50));
+Vue.component('leaderboard-component', __webpack_require__(39));
 
 var app = new Vue({
   el: '#app'
@@ -46872,7 +46872,53 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6)))
 
 /***/ }),
-/* 39 */,
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(40)
+/* script */
+var __vue_script__ = __webpack_require__(41)
+/* template */
+var __vue_template__ = __webpack_require__(42)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/LeaderboardComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-b5851692", Component.options)
+  } else {
+    hotAPI.reload("data-v-b5851692", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
 /* 40 */
 /***/ (function(module, exports) {
 
@@ -46982,68 +47028,7 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
-/* 41 */,
-/* 42 */,
-/* 43 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */,
-/* 50 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(40)
-/* script */
-var __vue_script__ = __webpack_require__(51)
-/* template */
-var __vue_template__ = __webpack_require__(52)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/LeaderboardComponent.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-b5851692", Component.options)
-  } else {
-    hotAPI.reload("data-v-b5851692", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 51 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47081,63 +47066,74 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['activities'],
     mounted: function mounted() {
-        console.log('Component mounted.');
+        console.log(this.activities);
     }
 });
 
 /***/ }),
-/* 52 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _c("div", { staticClass: "panel panel-default" }, [
+      _c("div", { staticClass: "panel-heading" }, [_vm._v("HotLap Leaders")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "panel-body" }, [
+        _c("table", { staticClass: "table table-bordered table-striped" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _c(
+            "tbody",
+            _vm._l(_vm.activities, function(activity) {
+              return _c("tr", [
+                _c("td", [_vm._v(_vm._s(activity.profile))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(activity.athlete.firstname))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(activity.name))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(activity.distance))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(activity.start_date_local))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(" count ")])
+              ])
+            })
+          )
+        ])
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "panel panel-default" }, [
-        _c("div", { staticClass: "panel-heading" }, [_vm._v("HotLap Leaders")]),
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Pic")]),
         _vm._v(" "),
-        _c("div", { staticClass: "panel-body" }, [
-          _c("table", { staticClass: "table table-bordered table-striped" }, [
-            _c("thead", [
-              _c("tr", [
-                _c("th", [_vm._v("Pic")]),
-                _vm._v(" "),
-                _c("th", [_vm._v("Name")]),
-                _vm._v(" "),
-                _c("th", [_vm._v("Route Name")]),
-                _vm._v(" "),
-                _c("th", [_vm._v("Distance")]),
-                _vm._v(" "),
-                _c("th", [_vm._v("Date")])
-              ])
-            ]),
-            _vm._v(" "),
-            _c("tbody", [
-              _c("tr", [
-                _c("td", [_vm._v("Jill")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Jill")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Jill")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Jill")]),
-                _vm._v(" "),
-                _c("td", [_vm._v("Jill")])
-              ])
-            ])
-          ])
-        ])
+        _c("th", [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Route Name")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Distance")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Date")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Total Laps")])
       ])
     ])
   }
@@ -47150,6 +47146,12 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-b5851692", module.exports)
   }
 }
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

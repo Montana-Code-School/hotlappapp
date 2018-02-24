@@ -6,14 +6,16 @@
  <!-- Masthead -->
 
 <!-- example vue component -->
+
 <div id="app">
       
-      <leaderboard-component>
+      <leaderboard-component :activities="{{ json_encode($activities) }}">
+      
       </leaderboard-component>
      
     </div>
 
- @foreach ($club_members as $member)
+{{-- @foreach ($club_members as $member)
           <p>This is a club member in da club:  {{ $member['id'] }}</p>
         @endforeach
 
@@ -26,6 +28,6 @@
             <li> Distance: {{ $activity['distance'] }} </li>
           </ul>
         @endforeach
-
+--}}
 @endsection
 
