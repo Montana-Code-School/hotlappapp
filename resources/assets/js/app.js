@@ -15,7 +15,10 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component(
+    'leaderboard-component',
+    require('./components/LeaderboardComponent.vue')
+);
 
 const app = new Vue({
     el: '#app'

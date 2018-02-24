@@ -77,7 +77,7 @@ class LoginController extends Controller
             $member_activities = $client->getClubActivities(432809);
             //loop over each member to get activity and pass to leaderboard
 
-            return view('leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
+            return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
             
             //      foreach($member_activity as $activity)
             //         {
