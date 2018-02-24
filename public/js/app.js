@@ -13806,6 +13806,9 @@ window.Vue = __webpack_require__(36);
 
 Vue.component('leaderboard-component', __webpack_require__(39));
 
+Vue.use(VueMomentJS, moment);
+// Call this.$moment() in any component.
+
 var app = new Vue({
   el: '#app'
 });
@@ -47033,11 +47036,8 @@ module.exports = function normalizeComponent (
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -47072,8 +47072,72 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['activities'],
+    data: function data() {
+        return {
+            leaderBoard: []
+        };
+    },
+
+    // computed: {
+    //     sortedLeaderBoard(){
+    //         return this.leaderBoard.sort(this.sortLeaders);
+    //     }
+    // },
+
     mounted: function mounted() {
+        this.getLeaderBoard();
+        console.log(this.leaderBoard);
         console.log(this.activities);
+    },
+
+
+    methods: {
+        getLeaderBoard: function getLeaderBoard() {
+            var _this = this;
+
+            //loop through activitites and collect totals for a member
+            this.activities.forEach(function (activity) {
+                if (_this.isAthleteInLeaderBoard(activity.athlete)) {
+                    _this.addActivity(activity);
+                } else {
+                    _this.leaderBoard.push(_extends({}, activity.athlete, { totalLaps: 1, totalMiles: activity.distance }));
+                }
+            });
+            this.leaderBoard.sort(this.sortLeaders);
+        },
+        isAthleteInLeaderBoard: function isAthleteInLeaderBoard(athlete) {
+            if (this.leaderBoard.length) {
+                var isInLeaderBoard = false;
+                this.leaderBoard.forEach(function (leaders) {
+                    if (leaders.id === athlete.id) {
+                        isInLeaderBoard = true;
+                    }
+                });
+                return isInLeaderBoard;
+            } else {
+                return false;
+            }
+        },
+        addActivity: function addActivity(activity) {
+            var foundAthlete = this.leaderBoard.find(function (leader) {
+                return activity.athlete.id === leader.id;
+            });
+            console.log(activity.distance);
+            console.log(foundAthlete.totalMiles);
+            var newTotalMiles = foundAthlete.totalMiles + activity.distance;
+            console.log(newTotalMiles);
+            foundAthlete.totalLaps = ++foundAthlete.totalLaps;
+            foundAthlete.totalMiles = newTotalMiles;
+        },
+        sortLeaders: function sortLeaders(athleteA, athleteB) {
+            if (athleteA.totalLaps < athleteB.totalLaps) {
+                return 1;
+            } else if (athleteA.totalLaps > athleteB.totalLaps) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 });
 
@@ -47095,19 +47159,15 @@ var render = function() {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.activities, function(activity) {
+            _vm._l(_vm.leaderBoard, function(leader) {
               return _c("tr", [
-                _c("td", [_vm._v(_vm._s(activity.profile))]),
+                _c("td", [_c("img", { attrs: { src: leader.profile } })]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(activity.athlete.firstname))]),
+                _c("td", [_vm._v(_vm._s(leader.firstname))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(activity.name))]),
+                _c("td", [_vm._v(_vm._s(leader.totalMiles))]),
                 _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(activity.distance))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(_vm._s(activity.start_date_local))]),
-                _vm._v(" "),
-                _c("td", [_vm._v(" count ")])
+                _c("td", [_vm._v(_vm._s(leader.totalLaps))])
               ])
             })
           )
@@ -47123,15 +47183,11 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", [_vm._v("Pic")]),
+        _c("th", [_vm._v("Profile Pic")]),
         _vm._v(" "),
         _c("th", [_vm._v("Name")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Route Name")]),
-        _vm._v(" "),
         _c("th", [_vm._v("Total Distance")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Date")]),
         _vm._v(" "),
         _c("th", [_vm._v("Total Laps")])
       ])

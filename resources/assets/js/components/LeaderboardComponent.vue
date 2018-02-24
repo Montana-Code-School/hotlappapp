@@ -9,23 +9,18 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Pic</th>
+                        <th>Profile Pic</th>
                         <th>Name</th>
-                        <th>Route Name</th>
                         <th>Total Distance</th>
-                        <th>Date</th>
                         <th>Total Laps</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for='activity in activities'>
-                        <td >{{ activity.profile }}</td>
-                        <td>{{ activity.athlete.firstname }}</td>
-                        <td>{{ activity.name }}</td>
-                        <td>{{ activity.distance }}</td>
-                        <td>{{ activity.start_date_local }}</td>
-                        <td> count </td>
-
+                    <tr v-for='leader in leaderBoard'>
+                        <td> <img :src="leader.profile"/></td>
+                        <td>{{ leader.firstname }}</td>
+                        <td>{{ leader.totalMiles }}</td>
+                        <td>{{ leader.totalLaps }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -37,8 +32,70 @@
 <script>
     export default {
         props: ['activities'],
-        mounted() {
-            console.log(this.activities)
+        data() {
+            return {
+                leaderBoard: []
+            }
+
+        },
+    // computed: {
+    //     sortedLeaderBoard(){
+    //         return this.leaderBoard.sort(this.sortLeaders);
+    //     }
+    // },
+
+    mounted() {
+        this.getLeaderBoard();
+        console.log(this.leaderBoard)
+        console.log(this.activities);
+    },
+
+    methods: {
+         getLeaderBoard() {
+                //loop through activitites and collect totals for a member
+            this.activities.forEach(activity => {
+                if(this.isAthleteInLeaderBoard(activity.athlete)){
+                    this.addActivity(activity);
+                } else {
+                    this.leaderBoard.push({...activity.athlete,totalLaps:1, totalMiles:activity.distance})
+                }
+            })
+            this.leaderBoard.sort(this.sortLeaders);
+        },
+        isAthleteInLeaderBoard(athlete){
+            if (this.leaderBoard.length) {
+                let isInLeaderBoard = false;
+                this.leaderBoard.forEach(leaders => {
+                    if(leaders.id === athlete.id){
+                        isInLeaderBoard = true;
+                    } 
+                })
+                return isInLeaderBoard;
+            } else {
+                return false;
+
+            }
+        },
+        addActivity(activity) {
+            let foundAthlete = this.leaderBoard.find(leader => {
+                return activity.athlete.id === leader.id;
+            })
+            console.log(activity.distance);
+            console.log(foundAthlete.totalMiles);
+            let newTotalMiles = foundAthlete.totalMiles+activity.distance;
+            console.log(newTotalMiles);
+            foundAthlete.totalLaps=++foundAthlete.totalLaps;
+            foundAthlete.totalMiles = newTotalMiles;
+        },
+        sortLeaders(athleteA, athleteB) {
+            if(athleteA.totalLaps < athleteB.totalLaps) {
+                return 1;
+            } else if (athleteA.totalLaps > athleteB.totalLaps) {
+                return -1;
+            } else {
+                return 0;
+            }
         }
     }
+}
 </script>
