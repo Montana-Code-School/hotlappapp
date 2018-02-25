@@ -7,8 +7,10 @@
             <div class="panel-heading">HotLap Leaders</div>
             <div class="panel-body">
                 <table class="table table-bordered table-striped">
-                    <thead>
+                
+                    <thead class="thead-dark">
                     <tr>
+                     
                         <th>Profile Pic</th>
                         <th>Name</th>
                         <th>Total Distance</th>
@@ -17,7 +19,8 @@
                     </thead>
                     <tbody>
                     <tr v-for='leader in leaderBoard'>
-                        <td> <img :src="leader.profile"/></td>
+                       
+                        <td> <img center :src="leader.profile" class="img-thumbnail rounded-circle border border-success fluid" width="100" height="100"/></td>
                         <td>{{ leader.firstname }}</td>
                         <td>{{ leader.totalMiles }}</td>
                         <td>{{ leader.totalLaps }}</td>

@@ -20,7 +20,7 @@ Vue.component(
     require('./components/LeaderboardComponent.vue')
 );
 
-Vue.use(VueMomentJS, moment);
+//Vue.use(VueMomentJS, moment);
 // Call this.$moment() in any component.
 
 const app = new Vue({
