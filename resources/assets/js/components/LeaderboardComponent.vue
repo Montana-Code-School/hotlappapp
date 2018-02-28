@@ -51,14 +51,13 @@
         this.getLeaderBoard();
         //console.log(this.leaderBoard)
         //console.log(this.activities);
-        console.log(this.$moment());
     },
 
     methods: {
          getLeaderBoard() {
                 //loop through activitites and collect totals for a member
             this.activities.forEach(activity => {
-                if(this.isActivityEnough(activity)) {
+                if(this.isActivityEnough(activity) && this.isStartDateInSelectedMonth(activity)) {
                     if(this.isAthleteInLeaderBoard(activity.athlete)) {
                         this.addActivity(activity);
                     } else {
@@ -109,6 +108,13 @@
             } else {
                 return 0;
             }
+        },
+        isStartDateInSelectedMonth(activity){
+            let today = this.$moment();
+            let activityDate = this.$moment(activity.start_date_local)
+            console.log(activity.start_date_local);
+            console.log(activityDate);
+            return today.isSame(activityDate, 'month');
         }
     }
 }

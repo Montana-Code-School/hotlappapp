@@ -63595,7 +63595,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.getLeaderBoard();
         //console.log(this.leaderBoard)
         //console.log(this.activities);
-        console.log(this.$moment());
     },
 
 
@@ -63605,7 +63604,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
             //loop through activitites and collect totals for a member
             this.activities.forEach(function (activity) {
-                if (_this.isActivityEnough(activity)) {
+                if (_this.isActivityEnough(activity) && _this.isStartDateInSelectedMonth(activity)) {
                     if (_this.isAthleteInLeaderBoard(activity.athlete)) {
                         _this.addActivity(activity);
                     } else {
@@ -63654,6 +63653,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             } else {
                 return 0;
             }
+        },
+        isStartDateInSelectedMonth: function isStartDateInSelectedMonth(activity) {
+            var today = this.$moment();
+            var activityDate = this.$moment(activity.start_date_local);
+            console.log(activity.start_date_local);
+            console.log(activityDate);
+            return today.isSame(activityDate, 'month');
         }
     }
 });
