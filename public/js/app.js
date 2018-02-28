@@ -30053,6 +30053,7 @@ Vue.component('leaderboard-component', __webpack_require__(161));
 
 var app = new Vue({
   el: '#app'
+
 });
 
 /***/ }),
@@ -63576,15 +63577,30 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['activities'],
     data: function data() {
         return {
-            leaderBoard: []
+            leaderBoard: [],
+            selectedMonth: this.$moment().format('MM')
         };
     },
 
+    watch: {
+        // whenever selectedMonth changes, this function will run
+        selectedMonth: function selectedMonth(newMonth) {
+            this.leaderBoard = [];
+            this.getLeaderBoard();
+        }
+    },
     // computed: {
     //     sortedLeaderBoard(){
     //         return this.leaderBoard.sort(this.sortLeaders);
@@ -63655,11 +63671,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             }
         },
         isStartDateInSelectedMonth: function isStartDateInSelectedMonth(activity) {
-            var today = this.$moment();
+            var selectedDateYear = this.$moment().year();
+            var selectedDateMonth = this.selectedMonth;
+            var selectedDate = this.$moment(selectedDateYear + '-' + selectedDateMonth + '-01');
             var activityDate = this.$moment(activity.start_date_local);
-            console.log(activity.start_date_local);
-            console.log(activityDate);
-            return today.isSame(activityDate, 'month');
+            //console.log(activity.start_date_local);
+            //console.log(activityDate);
+
+            return selectedDate.isSame(activityDate, 'month');
+
+            var month = activityDate.month();
+            //console.log(month);
+            console.log(selectedDate);
+            if (parseInt(month) === parseInt(this.selectedMonth)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 });
@@ -63675,6 +63703,44 @@ var render = function() {
   return _c("div", [
     _c("div", { staticClass: "panel panel-default" }, [
       _c("div", { staticClass: "panel-heading" }, [_vm._v("HotLap Leaders")]),
+      _vm._v(" "),
+      _c(
+        "select",
+        {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.selectedMonth,
+              expression: "selectedMonth"
+            }
+          ],
+          on: {
+            change: function($event) {
+              var $$selectedVal = Array.prototype.filter
+                .call($event.target.options, function(o) {
+                  return o.selected
+                })
+                .map(function(o) {
+                  var val = "_value" in o ? o._value : o.value
+                  return val
+                })
+              _vm.selectedMonth = $event.target.multiple
+                ? $$selectedVal
+                : $$selectedVal[0]
+            }
+          }
+        },
+        [
+          _c("option", { attrs: { value: "01" } }, [_vm._v("January")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "02" } }, [_vm._v("February")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "03" } }, [_vm._v("March")]),
+          _vm._v(" "),
+          _c("option", { attrs: { value: "04" } }, [_vm._v("April")])
+        ]
+      ),
       _vm._v(" "),
       _c("div", { staticClass: "panel-body" }, [
         _c("table", { staticClass: "table table-bordered table-striped" }, [

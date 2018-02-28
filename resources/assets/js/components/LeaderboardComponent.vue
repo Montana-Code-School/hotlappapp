@@ -5,6 +5,13 @@
        
         <div class="panel panel-default">
             <div class="panel-heading">HotLap Leaders</div>
+            <select v-model="selectedMonth">
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+            </select>
+            
             <div class="panel-body">
                 <table class="table table-bordered table-striped">
                 
@@ -37,9 +44,19 @@
         props: ['activities'],
         data() {
             return {
-                leaderBoard: []
+                leaderBoard: [],
+                selectedMonth: this.$moment().format('MM')
             }
+            
 
+        },
+        watch: {
+            // whenever selectedMonth changes, this function will run
+            selectedMonth: function(newMonth){
+                this.leaderBoard = [];
+                this.getLeaderBoard();
+                
+            }
         },
     // computed: {
     //     sortedLeaderBoard(){
@@ -110,11 +127,23 @@
             }
         },
         isStartDateInSelectedMonth(activity){
-            let today = this.$moment();
+            let selectedDateYear = this.$moment().year();
+            let selectedDateMonth = this.selectedMonth;
+            let selectedDate = this.$moment(selectedDateYear + '-' + selectedDateMonth + '-01')
             let activityDate = this.$moment(activity.start_date_local)
-            console.log(activity.start_date_local);
-            console.log(activityDate);
-            return today.isSame(activityDate, 'month');
+            //console.log(activity.start_date_local);
+            //console.log(activityDate);
+            
+            return selectedDate.isSame(activityDate, 'month');
+           
+            let month = activityDate.month();
+            //console.log(month);
+            console.log(selectedDate);
+            if (parseInt(month) === parseInt(this.selectedMonth)) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
