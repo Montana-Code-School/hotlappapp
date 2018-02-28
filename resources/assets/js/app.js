@@ -7,7 +7,13 @@
 
 require('./bootstrap');
 
+
 window.Vue = require('vue');
+
+import moment from "moment";
+import VueMomentJS from "vue-momentjs";
+ 
+Vue.use(VueMomentJS, moment);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

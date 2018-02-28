@@ -22,7 +22,7 @@
                        
                         <td> <img center :src="leader.profile" class="img-thumbnail rounded-circle border border-success fluid" width="100" height="100"/></td>
                         <td>{{ leader.firstname }}</td>
-                        <td>{{ leader.totalMiles }}</td>
+                        <td>{{ (leader.totalMiles*0.000621371).toFixed(1) }}</td>
                         <td>{{ leader.totalLaps }}</td>
                     </tr>
                     </tbody>
@@ -49,18 +49,21 @@
 
     mounted() {
         this.getLeaderBoard();
-        console.log(this.leaderBoard)
-        console.log(this.activities);
+        //console.log(this.leaderBoard)
+        //console.log(this.activities);
+        console.log(this.$moment());
     },
 
     methods: {
          getLeaderBoard() {
                 //loop through activitites and collect totals for a member
             this.activities.forEach(activity => {
-                if(this.isAthleteInLeaderBoard(activity.athlete)){
-                    this.addActivity(activity);
-                } else {
-                    this.leaderBoard.push({...activity.athlete,totalLaps:1, totalMiles:activity.distance})
+                if(this.isActivityEnough(activity)) {
+                    if(this.isAthleteInLeaderBoard(activity.athlete)) {
+                        this.addActivity(activity);
+                    } else {
+                        this.leaderBoard.push({...activity.athlete,totalLaps:1, totalMiles:activity.distance})
+                    }
                 }
             })
             this.leaderBoard.sort(this.sortLeaders);
@@ -83,12 +86,20 @@
             let foundAthlete = this.leaderBoard.find(leader => {
                 return activity.athlete.id === leader.id;
             })
-            console.log(activity.distance);
-            console.log(foundAthlete.totalMiles);
+            //console.log(activity.distance);
+            //console.log(foundAthlete.totalMiles);
             let newTotalMiles = foundAthlete.totalMiles+activity.distance;
-            console.log(newTotalMiles);
             foundAthlete.totalLaps=++foundAthlete.totalLaps;
             foundAthlete.totalMiles = newTotalMiles;
+    
+        },
+        isActivityEnough(activity){
+            // decimal moved 4 place left 4972.873 
+            if(activity.distance < .4972873) {
+                return false;
+            } else {
+                return true;
+            }
         },
         sortLeaders(athleteA, athleteB) {
             if(athleteA.totalLaps < athleteB.totalLaps) {
