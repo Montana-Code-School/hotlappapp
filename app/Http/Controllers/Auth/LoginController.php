@@ -9,6 +9,8 @@ use Socialite;
 use Strava\API\Client;
 use Strava\API\Exception;
 use Strava\API\Service\REST;
+use Illuminate\Http\Request;
+
 
 class LoginController extends Controller
 {
@@ -55,44 +57,35 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function handleProviderCallback()
+    public function handleProviderCallback(Request $request)
     {
-        $user = Socialite::driver('strava')->user();
-        // dd($user->token);
+        if ($request->session()->get('hotlappappAT')) {
+            $token = $request->session()->get('hotlappappAT');
+        } else  {
+            $user = Socialite::driver('strava')->user();
+            $token = $user->token;
+            session(['hotlappappAT'=>$token]);
+        }
+        // dd($token);
+        // dd($request->session()->get('hotlappappAT'));
+
         try {
+    
             $adapter = new Pest('https://www.strava.com/api/v3');
-            $service = new REST($user->token, $adapter);  // Define your user token here.
+            $service = new REST($token, $adapter);  // Define your user token here.
             $client = new Client($service);
         
-            // $athlete = $client->getAthlete();
-            // print_r($athlete);
-        
-            // $activities = $client->getAthleteActivities();
-            // print_r($activities);
-        
-            // $club = $client->getClub(432809);
-            // print_r($club);
-            
             $members = $client->getClubMembers(432809);
             $member_activities = $client->getClubActivities(432809);
             //loop over each member to get activity and pass to leaderboard
 
             return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
-            
-            //      foreach($member_activity as $activity)
-            //         {
-            //             $activity = User::find($activity->created_by);
-            //             $created_by = $user['name'];
-            //         }
-            // print_r($member_activity);
-
-            
+           
 
         } catch(Exception $e) {
             print $e->getMessage();
         }
-        // dd($user);
 
-        // $user->token;
+
     }
 }

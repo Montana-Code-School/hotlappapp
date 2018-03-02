@@ -8,6 +8,8 @@
 <!-- example vue component -->
 
 <div id="app">
+
+
       
       <leaderboard-component :activities="{{ json_encode($activities) }}">
       
@@ -29,5 +31,6 @@
           </ul>
         @endforeach
 --}}
+
 @endsection
 
