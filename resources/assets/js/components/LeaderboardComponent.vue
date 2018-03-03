@@ -2,18 +2,36 @@
 
 <template>
     <div>
-       
+      <div>
+       <b-container fluid>
         <div class="panel panel-default">
-            <div class="panel-heading">HotLap Leaders</div>
+            <div class="panel-heading">
+                <h4><b>HotLap Leaders by Month</b></h4>
+            </div>
+            <b-dropdown id="ddown-lg" text="Select Month" class="m-md-2">
             <select v-model="selectedMonth">
                 <option value="01">January</option>
                 <option value="02">February</option>
                 <option value="03">March</option>
                 <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">August</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
             </select>
-            
+            </b-dropdown>
+            </div>
+        </b-container>
+        </div>
+
+        <div>
+          <b-container fluid>    
             <div class="panel-body">
-                <table class="table table-bordered table-striped">
+                <table v-model="small" class="table table-bordered table-striped">
                 
                     <thead class="thead-dark">
                     <tr>
@@ -27,7 +45,7 @@
                     <tbody>
                     <tr v-for='leader in leaderBoard'>
                        
-                        <td> <img center :src="leader.profile" class="img-thumbnail rounded-circle border border-success fluid" width="100" height="100"/></td>
+                        <td> <b-img center :src="leader.profile" fluid alt="Fluid image" class="img-thumbnail rounded-circle border border-success" width="100" height="100"/></td>
                         <td>{{ leader.firstname }}</td>
                         <td>{{ (leader.totalMiles*0.000621371).toFixed(1) }}</td>
                         <td>{{ leader.totalLaps }}</td>
@@ -35,6 +53,7 @@
                     </tbody>
                 </table>
             </div>
+            </b-container>
         </div>
     </div>
 </template>
