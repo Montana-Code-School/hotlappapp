@@ -24,13 +24,12 @@
         </div>
         </nav>
 
+        <div class="container">
+          <div class="row">
+             @yield('content')
+          </div>
+        </div>
 
-        @yield('content')
-
-
-        
-
- 
   <!-- Footer -->
   <footer class="footer bg-light">
     <div class="container">

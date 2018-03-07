@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('pages.welcome');
 });
 
+Route::get('/stravaers', function () {
+    $companies = App\Company::all(['name', 'id']);
+    return view('pages.stravaers')->with($companies);
+});
+
 Route::get('login/strava', 'Auth\LoginController@redirectToProvider')->name('stravalogin');
 Route::get('leaderboard', 'Auth\LoginController@handleProviderCallback');
 
