@@ -8,8 +8,7 @@
             <div class="panel-heading">
                 <h4><b>HotLap Leaders by Month</b></h4>
             </div>
-            <b-dropdown id="ddown-lg" text="Select Month" class="m-md-2">
-            <select v-model="selectedMonth">
+            <b-form-select v-model="selectedMonth" :options="options" id="ddown-lg" text="Select Month" class="m-md-2">
                 <option value="01">January</option>
                 <option value="02">February</option>
                 <option value="03">March</option>
@@ -22,8 +21,7 @@
                 <option value="10">October</option>
                 <option value="11">November</option>
                 <option value="12">December</option>
-            </select>
-            </b-dropdown>
+            </b-form-select>
             </div>
         </b-container>
         </div>
