@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\StravaersController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,8 +18,11 @@ Route::get('/', function () {
 
 Route::get('/stravaers', function () {
     $companies = App\Company::all(['name', 'id']);
-    return view('pages.stravaers')->with($companies);
+    return view('pages.stravaers', ['companies' => $companies]);
 });
+
+Route::post('/stravaers', 'StravaersController@store');
+
 
 Route::get('login/strava', 'Auth\LoginController@redirectToProvider')->name('stravalogin');
 Route::get('leaderboard', 'Auth\LoginController@handleProviderCallback');

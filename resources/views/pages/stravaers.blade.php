@@ -3,17 +3,14 @@
 
 @section('content')
 
-{{dd($companies);}}
-
-<form>
+<form method="post" action="/stravaers">
+  {{ csrf_field() }}
   <div class="form-group">
    <label for="exampleFormControlSelect1">Example select</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
+    <select name="companyId" class="form-control" id="exampleFormControlSelect1">
+      @foreach ($companies as $company)
+        <option value={{$company->id}}>{{$company->name}}</option>
+      @endforeach
     </select>
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>

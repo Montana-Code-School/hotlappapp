@@ -10,6 +10,8 @@ use Strava\API\Client;
 use Strava\API\Exception;
 use Strava\API\Service\REST;
 use Illuminate\Http\Request;
+use App\Stravaers;
+use App\Company;
 
 
 class LoginController extends Controller
@@ -70,16 +72,21 @@ class LoginController extends Controller
         // dd($request->session()->get('hotlappappAT'));
 
         try {
-    
+ 
             $adapter = new Pest('https://www.strava.com/api/v3');
             $service = new REST($token, $adapter);  // Define your user token here.
             $client = new Client($service);
-        
+            $athlete = $client->getAthlete($id = null);
             $members = $client->getClubMembers(432809);
             $member_activities = $client->getClubActivities(432809);
-            //loop over each member to get activity and pass to leaderboard
 
-            return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
+            if(Stravaers::find($athlete['id'])){
+                return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
+            } else {
+                $companies = Company::all(['name', 'id']);
+                return view('pages.stravaers', ['companies' => $companies]);
+            }
+            
            
 
         } catch(Exception $e) {
