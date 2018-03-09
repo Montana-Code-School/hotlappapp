@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-// include 'vendor/autoload.php';
 use Pest;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -12,6 +11,8 @@ use Strava\API\Service\REST;
 use Illuminate\Http\Request;
 use App\Stravaers;
 use App\Company;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class LoginController extends Controller
@@ -65,10 +66,12 @@ class LoginController extends Controller
             $token = $request->session()->get('hotlappappAT');
         } else  {
             $user = Socialite::driver('strava')->user();
+            $authUser = $this->findOrCreateUser($user, $provider);
+            Auth::login($authUser, true);
             $token = $user->token;
             session(['hotlappappAT'=>$token]);
         }
-        // dd($token);
+        dd(Auth::check());
         // dd($request->session()->get('hotlappappAT'));
 
         try {
@@ -83,8 +86,9 @@ class LoginController extends Controller
             if(Stravaers::find($athlete['id'])){
                 return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
             } else {
+
                 $companies = Company::all(['name', 'id']);
-                return view('pages.stravaers', ['companies' => $companies]);
+                return view('pages.stravaers', ['companies' => $companies, 'stravaerId' => $athlete['id']]);
             }
             
            

@@ -21,10 +21,14 @@ Route::get('/stravaers', function () {
     return view('pages.stravaers', ['companies' => $companies]);
 });
 
-Route::post('/stravaers', 'StravaersController@store');
+Route::post('/stravaers', 'StravaersController@store')->middleware('auth');
 
 
 Route::get('login/strava', 'Auth\LoginController@redirectToProvider')->name('stravalogin');
 Route::get('leaderboard', 'Auth\LoginController@handleProviderCallback');
 
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

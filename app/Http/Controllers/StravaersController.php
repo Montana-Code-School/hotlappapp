@@ -20,7 +20,12 @@ class StravaersController extends Controller
     public function store(Request $request)
     {
         $companyId = $request->input('companyId');
-        // return back();
+
+        $stravaer = new Stravaer;
+
+        $stravaer->id = $request->strava_id;
+
+        $stravaer->save();
         
 
 
