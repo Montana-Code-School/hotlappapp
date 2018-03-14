@@ -25,9 +25,15 @@ Route::post('/stravaers', 'StravaersController@store')->middleware('auth');
 
 
 Route::get('login/strava', 'Auth\LoginController@redirectToProvider')->name('stravalogin');
-Route::get('leaderboard', 'Auth\LoginController@handleProviderCallback');
+Route::get('login/strava/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('leaderboard', 'StravaersController@loadLeaderboard')->name('leaderboard');
 
 
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 

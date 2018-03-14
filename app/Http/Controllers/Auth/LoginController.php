@@ -1,17 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-use Pest;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Socialite;
-use Strava\API\Client;
-use Strava\API\Exception;
-use Strava\API\Service\REST;
 use Illuminate\Http\Request;
-use App\Stravaers;
 use App\Company;
 use Illuminate\Support\Facades\Auth;
+use App\User;
 
 
 
@@ -62,41 +58,40 @@ class LoginController extends Controller
      */
     public function handleProviderCallback(Request $request)
     {
-        if ($request->session()->get('hotlappappAT')) {
-            $token = $request->session()->get('hotlappappAT');
-        } else  {
-            $user = Socialite::driver('strava')->user();
-            $authUser = $this->findOrCreateUser($user, $provider);
-            Auth::login($authUser, true);
-            $token = $user->token;
-            session(['hotlappappAT'=>$token]);
-        }
-        dd(Auth::check());
+        $user = Socialite::driver('strava')->user();
+        $authUser = $this->findOrCreateUser($user);
+
+        Auth::login($authUser, true);
+        // return redirect($this->redirectTo);
+
+        // if ($request->session()->get('hotlappappAT')) {
+        //     $token = $request->session()->get('hotlappappAT');
+        // } else  {
+        //     $authUser = $this->findOrCreateUser($user, $provider);
+        //     Auth::login($authUser, true);
+        //    
+        //     session(['hotlappappAT'=>$token]);
+        // }
+        // dd(Auth::check());
         // dd($request->session()->get('hotlappappAT'));
 
-        try {
- 
-            $adapter = new Pest('https://www.strava.com/api/v3');
-            $service = new REST($token, $adapter);  // Define your user token here.
-            $client = new Client($service);
-            $athlete = $client->getAthlete($id = null);
-            $members = $client->getClubMembers(432809);
-            $member_activities = $client->getClubActivities(432809);
-
-            if(Stravaers::find($athlete['id'])){
-                return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
-            } else {
-
-                $companies = Company::all(['name', 'id']);
-                return view('pages.stravaers', ['companies' => $companies, 'stravaerId' => $athlete['id']]);
-            }
-            
-           
-
-        } catch(Exception $e) {
-            print $e->getMessage();
-        }
+        
 
 
     }
+
+    public function findOrCreateUser($user)
+    {
+        $authUser = User::where('strava_id', $user->id)->first();
+        if ($authUser) {
+            return $authUser;
+        }
+        return User::create([
+            'name'     => $user->name,
+            'email'    => $user->email,
+            'strava_id' => $user->id,
+            'strava_token' => $user->token
+        ]);
+    }
+    
 }

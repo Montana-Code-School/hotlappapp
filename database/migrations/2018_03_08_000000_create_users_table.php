@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStravaersTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,16 @@ class CreateStravaersTable extends Migration
      */
     public function up()
     {
-        Schema::create('stravaers', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name');
+            $table->string('email')->nullable();
+            $table->string('password', 60)->nullable();
+            $table->string('strava_token')->nullable();
             $table->integer('strava_id');
-            $table->integer('company_id')->unsigned();
+            $table->integer('company_id')->unsigned()->nullable();
             $table->foreign('company_id')->references('id')->on('companies');
+            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -29,6 +34,6 @@ class CreateStravaersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stravaers');
+        Schema::dropIfExists('users');
     }
 }
