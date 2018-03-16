@@ -16,12 +16,13 @@ Route::get('/', function () {
     return view('pages.welcome');
 });
 
-Route::get('/stravaers', function () {
+Route::get('/companies', function (Request $request) {
+dd($request);
     $companies = App\Company::all(['name', 'id']);
     return view('pages.stravaers', ['companies' => $companies]);
-});
+})->name('companies');
 
-Route::post('/stravaers', 'StravaersController@store')->middleware('auth');
+Route::post('/stravaers', 'StravaersController@store');
 
 
 Route::get('login/strava', 'Auth\LoginController@redirectToProvider')->name('stravalogin');

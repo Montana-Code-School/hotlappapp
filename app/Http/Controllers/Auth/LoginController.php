@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 use App\Company;
 use Illuminate\Support\Facades\Auth;
 use App\User;
+use App\Http\Controllers\StravaersController;
+use Pest;
+use Strava\API\Service\REST;
+use Strava\API\Client;
+use Strava\API\Exception;
 
 
 
@@ -60,24 +65,17 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('strava')->user();
         $authUser = $this->findOrCreateUser($user);
+        $token = $authUser->strava_token;
+       
+       
+           if($authUser->company_id !== null){
+                return redirect()->route('leaderboard', ['token'=>$token]);
+            } else {
+                return redirect()->route('companies', ['authUser'=>$authUser]);
 
-        Auth::login($authUser, true);
-        // return redirect($this->redirectTo);
-
-        // if ($request->session()->get('hotlappappAT')) {
-        //     $token = $request->session()->get('hotlappappAT');
-        // } else  {
-        //     $authUser = $this->findOrCreateUser($user, $provider);
-        //     Auth::login($authUser, true);
-        //    
-        //     session(['hotlappappAT'=>$token]);
-        // }
-        // dd(Auth::check());
-        // dd($request->session()->get('hotlappappAT'));
-
-        
-
-
+            //     $companies = Company::all(['name', 'id']);
+            //    return view('pages.stravaers', ['companies' => $companies, 'stravaerId' => $athlete['id']]);
+            }
     }
 
     public function findOrCreateUser($user)

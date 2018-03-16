@@ -23,6 +23,6 @@ class RedirectIfAuthenticated
             return redirect('/leaderboard');
         }
 
-        return $next($request)->redirect('/leaderboard');
+        return $next($request);
     }
 }

@@ -30,9 +30,7 @@ class StravaersController extends Controller
     public function store(Request $request)
     {
         $companyId = $request->input('companyId');
-
-        $stravaer = new Stravaer;
-
+dd($request);
         $stravaer->id = $request->strava_id;
 
         $stravaer->save();
@@ -45,26 +43,16 @@ class StravaersController extends Controller
     {
         try {
  
-            $user = Auth::user();
-            $token = $user->strava_token;
+            
             $adapter = new Pest('https://www.strava.com/api/v3');
-            $service = new REST($token, $adapter);  // Define your user token here.
+            $service = new REST($request->token, $adapter);  // Define your user token here.
             $client = new Client($service);
             $athlete = $client->getAthlete($id = null);
             $members = $client->getClubMembers(432809);
             $member_activities = $client->getClubActivities(432809);
-
-        
-            if(User::find($athlete['id'])){
+         
                 return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
-            } else {
-
-                $companies = Company::all(['name', 'id']);
-                return view('pages.stravaers', ['companies' => $companies, 'stravaerId' => $athlete['id']]);
-            }
-            
            
-
         } catch(Exception $e) {
             print $e->getMessage();
         }
