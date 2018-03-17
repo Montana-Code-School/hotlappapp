@@ -61,7 +61,6 @@ class StravaersController extends Controller
 
     public function loadCompanies(Request $request) {
         $companies = Company::all(['name', 'id']);
-        //dd($request->authUserId);
         return view('pages.stravaers', ['companies' => $companies, 'userId' => $request->authUserId]);
     }
 }

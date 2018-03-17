@@ -14,7 +14,7 @@ use App\Http\Controllers\StravaersController;
 
 Route::get('/', function () {
     return view('pages.welcome');
-});
+})->name('welcome');
 
 Route::get('/companies', 'StravaersController@loadCompanies')->name('companies');
 

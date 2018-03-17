@@ -65,11 +65,21 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('strava')->user();
         $authUser = $this->findOrCreateUser($user);
-        // dd($authUser);
+       //dd($user);
         $token = $authUser->strava_token;
-        
-       
-       
+        $hotLappAppClubId = 432809;
+        $clubs = $user->user['clubs'];
+        $inDaClub = false;
+       //dd($clubs);
+       foreach ($clubs as $club) {
+            if ($club['id'] === $hotLappAppClubId){
+                $inDaClub = true;
+            }
+       } 
+       if (!$inDaClub) {
+          return redirect()->route('welcome');
+       }
+
            if($authUser->company_id !== null){
                 return redirect()->route('leaderboard', ['token'=>$token]);
             } else {
