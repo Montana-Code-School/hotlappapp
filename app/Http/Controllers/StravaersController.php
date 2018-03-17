@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+// require_once 'StravaApi.php';
+
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -14,6 +16,7 @@ use Strava\API\Client;
 use Strava\API\Exception;
 use App\User;
 use App\Company;
+use Iamstuartwilson\StravaApi;
 
 
 
@@ -41,13 +44,16 @@ class StravaersController extends Controller
     {
         try {
  
-            
-            $adapter = new Pest('https://www.strava.com/api/v3');
-            $service = new REST($request->token, $adapter);  // Define your user token here.
-            $client = new Client($service);
-            $athlete = $client->getAthlete($id = null);
-            $members = $client->getClubMembers(432809);
-            $member_activities = $client->getClubActivities(432809);
+            $api = new StravaApi(
+                env('STRAVA_KEY'),
+                env('STRAVA_SECRET')
+            );
+            $api->setAccessToken($request->token);
+            $athlete = $api->get('athlete');
+            $members = $api->get('/clubs/432809/members');
+            dd($athlete);
+            $member_activities = $api->get('/clubs/432809/activities');
+            dd($member_activities);
             $companies = Company::all(['name', 'id']);
             $users = User::all(['strava_id', 'company_id']);
                 return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities, 'companies' => $companies, 'users' => $users]);

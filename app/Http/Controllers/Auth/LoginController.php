@@ -13,6 +13,8 @@ use Pest;
 use Strava\API\Service\REST;
 use Strava\API\Client;
 use Strava\API\Exception;
+use Iamstuartwilson\StravaApi;
+
 
 
 
@@ -54,7 +56,14 @@ class LoginController extends Controller
      */
     public function redirectToProvider()
     {
-        return Socialite::driver('strava')->redirect();
+        // return Socialite::driver('strava')->scopes(['public'])->redirect();
+        $api = new StravaApi(
+            env('STRAVA_KEY'),
+            env('STRAVA_SECRET')
+        );
+        $call = $api->authenticationUrl(env('STRAVA_REDIRECT_URI'), $approvalPrompt = 'auto', $scope = null, $state = null);
+        // dd($call);
+        return redirect($call);
     }
      /**
      * Obtain the user information from Strava.
@@ -77,7 +86,13 @@ class LoginController extends Controller
             }
        } 
        if (!$inDaClub) {
-          return redirect()->route('welcome');
+        $api = new StravaApi(
+            env('STRAVA_KEY'),
+            env('STRAVA_SECRET')
+        );
+        $api->setAccessToken($token);
+        $success = $api->post('/clubs/432809/join');
+        dd($success);
        }
 
            if($authUser->company_id !== null){
