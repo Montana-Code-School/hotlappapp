@@ -65,13 +65,15 @@ class LoginController extends Controller
     {
         $user = Socialite::driver('strava')->user();
         $authUser = $this->findOrCreateUser($user);
+        // dd($authUser);
         $token = $authUser->strava_token;
+        
        
        
            if($authUser->company_id !== null){
                 return redirect()->route('leaderboard', ['token'=>$token]);
             } else {
-                return redirect()->route('companies', ['authUser'=>$authUser]);
+                return redirect()->route('companies', ['authUserId'=>$authUser->id]);
 
             //     $companies = Company::all(['name', 'id']);
             //    return view('pages.stravaers', ['companies' => $companies, 'stravaerId' => $athlete['id']]);

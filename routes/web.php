@@ -16,11 +16,7 @@ Route::get('/', function () {
     return view('pages.welcome');
 });
 
-Route::get('/companies', function (Request $request) {
-dd($request);
-    $companies = App\Company::all(['name', 'id']);
-    return view('pages.stravaers', ['companies' => $companies]);
-})->name('companies');
+Route::get('/companies', 'StravaersController@loadCompanies')->name('companies');
 
 Route::post('/stravaers', 'StravaersController@store');
 

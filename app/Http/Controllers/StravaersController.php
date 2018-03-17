@@ -30,7 +30,9 @@ class StravaersController extends Controller
     public function store(Request $request)
     {
         $companyId = $request->input('companyId');
-dd($request);
+        $authUser = User::where('id', $request->userId)->first();
+        $authUser->company_id = $request->companyId;
+        $authUser->save();
         $stravaer->id = $request->strava_id;
 
         $stravaer->save();
@@ -58,5 +60,11 @@ dd($request);
         }
 
 
+    }
+
+    public function loadCompanies(Request $request) {
+        $companies = Company::all(['name', 'id']);
+        //dd($request->authUserId);
+        return view('pages.stravaers', ['companies' => $companies, 'userId' => $request->authUserId]);
     }
 }

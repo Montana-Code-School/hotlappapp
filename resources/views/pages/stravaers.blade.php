@@ -2,7 +2,6 @@
 @extends('layouts.general')
 
 @section('content')
-
 <form method="post" action="/stravaers">
   {{ csrf_field() }}
   <div class="form-group">
@@ -13,6 +12,7 @@
       @endforeach
     </select>
   </div>
+  <input type="hidden" name="userId" value="{{ $userId }}"/>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
