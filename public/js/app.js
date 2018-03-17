@@ -79538,19 +79538,35 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['activities'],
+    props: ['activities', 'companies', 'users'],
     data: function data() {
         return {
             leaderBoard: [],
-            selectedMonth: this.$moment().format('MM')
+            selectedMonth: this.$moment().format('MM'),
+            selectedCompany: 'all'
         };
     },
 
     watch: {
         // whenever selectedMonth changes, this function will run
         selectedMonth: function selectedMonth(newMonth) {
+            this.leaderBoard = [];
+            this.getLeaderBoard();
+        },
+        selectedCompany: function selectedCompany(newCompany) {
             this.leaderBoard = [];
             this.getLeaderBoard();
         }
@@ -79563,8 +79579,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     mounted: function mounted() {
         this.getLeaderBoard();
-        //console.log(this.leaderBoard)
-        //console.log(this.activities);
     },
 
 
@@ -79574,7 +79588,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
             //loop through activitites and collect totals for a member
             this.activities.forEach(function (activity) {
-                if (_this.isActivityEnough(activity) && _this.isStartDateInSelectedMonth(activity)) {
+
+                if (_this.isActivityEnough(activity) && _this.isStartDateInSelectedMonth(activity) && _this.isAthleteInSelectedCompany(activity.athlete.id)) {
+
                     if (_this.isAthleteInLeaderBoard(activity.athlete)) {
                         _this.addActivity(activity);
                     } else {
@@ -79601,8 +79617,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var foundAthlete = this.leaderBoard.find(function (leader) {
                 return activity.athlete.id === leader.id;
             });
-            //console.log(activity.distance);
-            //console.log(foundAthlete.totalMiles);
             var newTotalMiles = foundAthlete.totalMiles + activity.distance;
             foundAthlete.totalLaps = ++foundAthlete.totalLaps;
             foundAthlete.totalMiles = newTotalMiles;
@@ -79629,15 +79643,24 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var selectedDateMonth = this.selectedMonth;
             var selectedDate = this.$moment(selectedDateYear + '-' + selectedDateMonth + '-01');
             var activityDate = this.$moment(activity.start_date_local);
-            //console.log(activity.start_date_local);
-            //console.log(activityDate);
 
             return selectedDate.isSame(activityDate, 'month');
 
             var month = activityDate.month();
-            //console.log(month);
-            console.log(selectedDate);
             if (parseInt(month) === parseInt(this.selectedMonth)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        isAthleteInSelectedCompany: function isAthleteInSelectedCompany(stravaId) {
+            var userAthlete = this.users.find(function (user) {
+                return user.strava_id === stravaId;
+            });
+            console.log(userAthlete);
+            if (this.selectedCompany === 'all') {
+                return true;
+            } else if (userAthlete.company_id === this.selectedCompany) {
                 return true;
             } else {
                 return false;
@@ -79664,6 +79687,44 @@ var render = function() {
             { staticClass: "panel panel-default" },
             [
               _c("div", { staticClass: "panel-heading" }, [
+                _c("h4", [_c("b", [_vm._v("HotLap Leaders by Company")])])
+              ]),
+              _vm._v(" "),
+              _c(
+                "b-form-select",
+                {
+                  staticClass: "m-md-2",
+                  attrs: { id: "ddown-lg", text: "Select Month" },
+                  model: {
+                    value: _vm.selectedCompany,
+                    callback: function($$v) {
+                      _vm.selectedCompany = $$v
+                    },
+                    expression: "selectedCompany"
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "all" } }, [_vm._v("All")]),
+                  _vm._v(" "),
+                  _vm._l(_vm.companies, function(company) {
+                    return _c("option", { domProps: { value: company.id } }, [
+                      _vm._v(_vm._s(company.name))
+                    ])
+                  })
+                ],
+                2
+              )
+            ],
+            1
+          )
+        ]),
+        _vm._v(" "),
+        _c("b-container", { attrs: { fluid: "" } }, [
+          _c(
+            "div",
+            { staticClass: "panel panel-default" },
+            [
+              _c("div", { staticClass: "panel-heading" }, [
                 _c("h4", [_c("b", [_vm._v("HotLap Leaders by Month")])])
               ]),
               _vm._v(" "),
@@ -79671,11 +79732,7 @@ var render = function() {
                 "b-form-select",
                 {
                   staticClass: "m-md-2",
-                  attrs: {
-                    options: _vm.options,
-                    id: "ddown-lg",
-                    text: "Select Month"
-                  },
+                  attrs: { id: "ddown-lg", text: "Select Month" },
                   model: {
                     value: _vm.selectedMonth,
                     callback: function($$v) {
@@ -79729,68 +79786,55 @@ var render = function() {
       [
         _c("b-container", { attrs: { fluid: "" } }, [
           _c("div", { staticClass: "panel-body" }, [
-            _c(
-              "table",
-              {
-                staticClass: "table table-bordered table-striped",
-                model: {
-                  value: _vm.small,
-                  callback: function($$v) {
-                    _vm.small = $$v
-                  },
-                  expression: "small"
-                }
-              },
-              [
-                _c("thead", { staticClass: "thead-dark" }, [
-                  _c("tr", [
-                    _c("th", [_vm._v("Profile Pic")]),
+            _c("table", { staticClass: "table table-bordered table-striped" }, [
+              _c("thead", { staticClass: "thead-dark" }, [
+                _c("tr", [
+                  _c("th", [_vm._v("Profile Pic")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Name")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Total Distance")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Total Laps")])
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.leaderBoard, function(leader) {
+                  return _c("tr", [
+                    _c(
+                      "td",
+                      [
+                        _c("b-img", {
+                          staticClass:
+                            "img-thumbnail rounded-circle border border-success",
+                          attrs: {
+                            center: "",
+                            src: leader.profile,
+                            fluid: "",
+                            alt: "Fluid image",
+                            width: "100",
+                            height: "100"
+                          }
+                        })
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("th", [_vm._v("Name")]),
+                    _c("td", [_vm._v(_vm._s(leader.firstname))]),
                     _vm._v(" "),
-                    _c("th", [_vm._v("Total Distance")]),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s((leader.totalMiles * 0.000621371).toFixed(1))
+                      )
+                    ]),
                     _vm._v(" "),
-                    _c("th", [_vm._v("Total Laps")])
+                    _c("td", [_vm._v(_vm._s(leader.totalLaps))])
                   ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.leaderBoard, function(leader) {
-                    return _c("tr", [
-                      _c(
-                        "td",
-                        [
-                          _c("b-img", {
-                            staticClass:
-                              "img-thumbnail rounded-circle border border-success",
-                            attrs: {
-                              center: "",
-                              src: leader.profile,
-                              fluid: "",
-                              alt: "Fluid image",
-                              width: "100",
-                              height: "100"
-                            }
-                          })
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(leader.firstname))]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _vm._v(
-                          _vm._s((leader.totalMiles * 0.000621371).toFixed(1))
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(leader.totalLaps))])
-                    ])
-                  })
-                )
-              ]
-            )
+                })
+              )
+            ])
           ])
         ])
       ],

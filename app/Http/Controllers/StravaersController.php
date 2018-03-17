@@ -33,12 +33,8 @@ class StravaersController extends Controller
         $authUser = User::where('id', $request->userId)->first();
         $authUser->company_id = $request->companyId;
         $authUser->save();
-        $stravaer->id = $request->strava_id;
-
-        $stravaer->save();
-        
-
-
+        return redirect()->route('leaderboard', ['token'=>$authUser->strava_token]);
+    
     }
 
     public function loadLeaderboard(Request $request)
@@ -52,8 +48,9 @@ class StravaersController extends Controller
             $athlete = $client->getAthlete($id = null);
             $members = $client->getClubMembers(432809);
             $member_activities = $client->getClubActivities(432809);
-         
-                return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities]);
+            $companies = Company::all(['name', 'id']);
+            $users = User::all(['strava_id', 'company_id']);
+                return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities, 'companies' => $companies, 'users' => $users]);
            
         } catch(Exception $e) {
             print $e->getMessage();

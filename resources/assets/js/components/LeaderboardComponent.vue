@@ -3,12 +3,23 @@
 <template>
     <div>
       <div>
+      <b-container fluid>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4><b>HotLap Leaders by Company</b></h4>
+            </div>
+            <b-form-select v-model="selectedCompany"  id="ddown-lg" text="Select Month" class="m-md-2">
+                <option value="all">All</option>
+                <option v-for="company in companies" :value="company.id">{{company.name}}</option>
+            </b-form-select>
+            </div>
+        </b-container>
        <b-container fluid>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4><b>HotLap Leaders by Month</b></h4>
             </div>
-            <b-form-select v-model="selectedMonth" :options="options" id="ddown-lg" text="Select Month" class="m-md-2">
+            <b-form-select v-model="selectedMonth"  id="ddown-lg" text="Select Month" class="m-md-2">
                 <option value="01">January</option>
                 <option value="02">February</option>
                 <option value="03">March</option>
@@ -29,7 +40,7 @@
         <div>
           <b-container fluid>    
             <div class="panel-body">
-                <table v-model="small" class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped">
                 
                     <thead class="thead-dark">
                     <tr>
@@ -58,11 +69,12 @@
 
 <script>
     export default {
-        props: ['activities'],
+        props: ['activities', 'companies', 'users'], 
         data() {
             return {
                 leaderBoard: [],
-                selectedMonth: this.$moment().format('MM')
+                selectedMonth: this.$moment().format('MM'),
+                selectedCompany: 'all'
             }
             
 
@@ -70,6 +82,11 @@
         watch: {
             // whenever selectedMonth changes, this function will run
             selectedMonth: function(newMonth){
+                this.leaderBoard = [];
+                this.getLeaderBoard();
+                
+            },
+             selectedCompany: function(newCompany){
                 this.leaderBoard = [];
                 this.getLeaderBoard();
                 
@@ -83,15 +100,18 @@
 
     mounted() {
         this.getLeaderBoard();
-        //console.log(this.leaderBoard)
-        //console.log(this.activities);
     },
 
     methods: {
          getLeaderBoard() {
                 //loop through activitites and collect totals for a member
             this.activities.forEach(activity => {
-                if(this.isActivityEnough(activity) && this.isStartDateInSelectedMonth(activity)) {
+
+                if(this.isActivityEnough(activity) 
+                    && this.isStartDateInSelectedMonth(activity) 
+                    && this.isAthleteInSelectedCompany(activity.athlete.id)) 
+                    {
+                    
                     if(this.isAthleteInLeaderBoard(activity.athlete)) {
                         this.addActivity(activity);
                     } else {
@@ -119,8 +139,6 @@
             let foundAthlete = this.leaderBoard.find(leader => {
                 return activity.athlete.id === leader.id;
             })
-            //console.log(activity.distance);
-            //console.log(foundAthlete.totalMiles);
             let newTotalMiles = foundAthlete.totalMiles+activity.distance;
             foundAthlete.totalLaps=++foundAthlete.totalLaps;
             foundAthlete.totalMiles = newTotalMiles;
@@ -148,19 +166,31 @@
             let selectedDateMonth = this.selectedMonth;
             let selectedDate = this.$moment(selectedDateYear + '-' + selectedDateMonth + '-01')
             let activityDate = this.$moment(activity.start_date_local)
-            //console.log(activity.start_date_local);
-            //console.log(activityDate);
+
             
             return selectedDate.isSame(activityDate, 'month');
            
             let month = activityDate.month();
-            //console.log(month);
-            console.log(selectedDate);
             if (parseInt(month) === parseInt(this.selectedMonth)) {
                 return true;
             } else {
                 return false;
             }
+        },
+        isAthleteInSelectedCompany(stravaId) {
+            let userAthlete = this.users.find(user=>{
+                 return user.strava_id === stravaId;
+            }) 
+                console.log(userAthlete);
+            if (this.selectedCompany === 'all') {
+                return true;
+            } else if (userAthlete.company_id === this.selectedCompany){
+                return true;
+            }
+            
+            else {
+                return false;
+            }   
         }
     }
 }
