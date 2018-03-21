@@ -43,17 +43,17 @@ class StravaersController extends Controller
     public function loadLeaderboard(Request $request)
     {
         try {
- 
+            // dd($request['token']['access_token']);
             $api = new StravaApi(
                 env('STRAVA_KEY'),
                 env('STRAVA_SECRET')
             );
-            $api->setAccessToken($request->token);
+            $api->setAccessToken($request['token']['access_token']);
             $athlete = $api->get('athlete');
             $members = $api->get('/clubs/432809/members');
-            dd($athlete);
-            $member_activities = $api->get('/clubs/432809/activities');
-            dd($member_activities);
+            // dd($athlete);
+            $member_activities = $api->get('/clubs/432809/activities', ['per_page' => 100]);
+            //dd($member_activities);
             $companies = Company::all(['name', 'id']);
             $users = User::all(['strava_id', 'company_id']);
                 return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities, 'companies' => $companies, 'users' => $users]);
