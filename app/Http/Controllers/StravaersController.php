@@ -50,11 +50,10 @@ class StravaersController extends Controller
             $athlete = $client->getAthlete($id = null);
             $athleteActivities = $client->getAthleteActivities();
             $this->createNewActivities($athleteActivities);
-            dd();
-            // $member_activities = $client->getClubActivities(432809);
+            $member_activities = Activities::all();
             $companies = Company::all(['name', 'id']);
-            $users = User::all(['strava_id', 'company_id']);
-                return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities, 'companies' => $companies, 'users' => $users]);
+            $users = User::all();
+                return view('pages.leaderboard')->with(['activities' => $member_activities, 'companies' => $companies, 'users' => $users]);
            
         } catch(Exception $e) {
             print $e->getMessage();

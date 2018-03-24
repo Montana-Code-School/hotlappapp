@@ -79587,22 +79587,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             //loop through activitites and collect totals for a member
             this.activities.forEach(function (activity) {
 
-                if (_this.isActivityEnough(activity) && _this.isStartDateInSelectedMonth(activity) && _this.isAthleteInSelectedCompany(activity.athlete.id)) {
-
-                    if (_this.isAthleteInLeaderBoard(activity.athlete)) {
+                if (_this.isActivityEnough(activity) && _this.isStartDateInSelectedMonth(activity) && _this.isAthleteInSelectedCompany(activity.user_id)) {
+                    var user = _this.getAthleteById(activity);
+                    if (_this.isAthleteInLeaderBoard(activity.user_id)) {
                         _this.addActivity(activity);
                     } else {
-                        _this.leaderBoard.push(_extends({}, activity.athlete, { totalLaps: 1, totalMiles: activity.distance }));
+                        _this.leaderBoard.push(_extends({}, user, { totalLaps: 1, totalMiles: activity.distance }));
                     }
                 }
             });
             this.leaderBoard.sort(this.sortLeaders);
         },
-        isAthleteInLeaderBoard: function isAthleteInLeaderBoard(athlete) {
+        isAthleteInLeaderBoard: function isAthleteInLeaderBoard(athleteId) {
             if (this.leaderBoard.length) {
                 var isInLeaderBoard = false;
                 this.leaderBoard.forEach(function (leaders) {
-                    if (leaders.id === athlete.id) {
+                    if (leaders.strava_id === athleteId) {
                         isInLeaderBoard = true;
                     }
                 });
@@ -79613,7 +79613,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         },
         addActivity: function addActivity(activity) {
             var foundAthlete = this.leaderBoard.find(function (leader) {
-                return activity.athlete.id === leader.id;
+                return activity.user_id === leader.strava_id;
             });
             var newTotalMiles = foundAthlete.totalMiles + activity.distance;
             foundAthlete.totalLaps = ++foundAthlete.totalLaps;
@@ -79640,7 +79640,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var selectedDateYear = this.$moment().year();
             var selectedDateMonth = this.selectedMonth;
             var selectedDate = this.$moment(selectedDateYear + '-' + selectedDateMonth + '-01');
-            var activityDate = this.$moment(activity.start_date_local);
+            var activityDate = this.$moment(activity.date);
 
             return selectedDate.isSame(activityDate, 'month');
 
@@ -79655,7 +79655,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             var userAthlete = this.users.find(function (user) {
                 return user.strava_id === stravaId;
             });
-            console.log(userAthlete);
+            // console.log(userAthlete);
             if (this.selectedCompany === 'all') {
                 return true;
             } else if (userAthlete.company_id === this.selectedCompany) {
@@ -79663,6 +79663,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             } else {
                 return false;
             }
+        },
+        getAthleteById: function getAthleteById(activity) {
+            return this.users.find(function (user) {
+                return user.strava_id === activity.user_id;
+            });
         }
     }
 });
@@ -79809,7 +79814,7 @@ var render = function() {
                             "img-thumbnail rounded-circle border border-success",
                           attrs: {
                             center: "",
-                            src: leader.profile,
+                            src: leader.pic_url,
                             fluid: "",
                             alt: "Fluid image",
                             width: "100",
@@ -79820,7 +79825,7 @@ var render = function() {
                       1
                     ),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(leader.firstname))]),
+                    _c("td", [_vm._v(_vm._s(leader.name))]),
                     _vm._v(" "),
                     _c("td", [
                       _vm._v(

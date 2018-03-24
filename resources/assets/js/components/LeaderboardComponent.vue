@@ -52,8 +52,8 @@
                     <tbody>
                     <tr v-for='leader in leaderBoard'>
                        
-                        <td> <b-img center :src="leader.profile" fluid alt="Fluid image" class="img-thumbnail rounded-circle border border-success" width="100" height="100"/></td>
-                        <td>{{ leader.firstname }}</td>
+                        <td> <b-img center :src="leader.pic_url" fluid alt="Fluid image" class="img-thumbnail rounded-circle border border-success" width="100" height="100"/></td>
+                        <td>{{ leader.name }}</td>
                         <td>{{ (leader.totalMiles*0.000621371).toFixed(1) }}</td>
                         <td>{{ leader.totalLaps }}</td>
                     </tr>
@@ -107,23 +107,23 @@
 
                 if(this.isActivityEnough(activity) 
                     && this.isStartDateInSelectedMonth(activity) 
-                    && this.isAthleteInSelectedCompany(activity.athlete.id)) 
+                    && this.isAthleteInSelectedCompany(activity.user_id)) 
                     {
-                    
-                    if(this.isAthleteInLeaderBoard(activity.athlete)) {
+                    let user = this.getAthleteById(activity);
+                    if(this.isAthleteInLeaderBoard(activity.user_id)) {
                         this.addActivity(activity);
                     } else {
-                        this.leaderBoard.push({...activity.athlete,totalLaps:1, totalMiles:activity.distance})
+                        this.leaderBoard.push({...user,totalLaps:1, totalMiles:activity.distance})
                     }
                 }
             })
             this.leaderBoard.sort(this.sortLeaders);
         },
-        isAthleteInLeaderBoard(athlete){
+        isAthleteInLeaderBoard(athleteId){
             if (this.leaderBoard.length) {
                 let isInLeaderBoard = false;
                 this.leaderBoard.forEach(leaders => {
-                    if(leaders.id === athlete.id){
+                    if(leaders.strava_id === athleteId){
                         isInLeaderBoard = true;
                     } 
                 })
@@ -135,7 +135,7 @@
         },
         addActivity(activity) {
             let foundAthlete = this.leaderBoard.find(leader => {
-                return activity.athlete.id === leader.id;
+                return activity.user_id === leader.strava_id;
             })
             let newTotalMiles = foundAthlete.totalMiles+activity.distance;
             foundAthlete.totalLaps=++foundAthlete.totalLaps;
@@ -163,7 +163,7 @@
             let selectedDateYear = this.$moment().year();
             let selectedDateMonth = this.selectedMonth;
             let selectedDate = this.$moment(selectedDateYear + '-' + selectedDateMonth + '-01')
-            let activityDate = this.$moment(activity.start_date_local)
+            let activityDate = this.$moment(activity.date)
 
             
             return selectedDate.isSame(activityDate, 'month');
@@ -179,7 +179,7 @@
             let userAthlete = this.users.find(user=>{
                  return user.strava_id === stravaId;
             }) 
-                console.log(userAthlete);
+                // console.log(userAthlete);
             if (this.selectedCompany === 'all') {
                 return true;
             } else if (userAthlete.company_id === this.selectedCompany){
@@ -189,7 +189,13 @@
             else {
                 return false;
             }   
+        },
+        getAthleteById(activity) {
+            return this.users.find(user=>{
+                return user.strava_id === activity.user_id;
+            })
         }
+        
     }
 }
 </script>
