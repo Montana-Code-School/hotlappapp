@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->integer('strava_id');
             $table->integer('company_id')->unsigned()->nullable();
             $table->foreign('company_id')->references('id')->on('companies');
+            $table->string('pic_url');
             $table->rememberToken();
             $table->timestamps();
         });
