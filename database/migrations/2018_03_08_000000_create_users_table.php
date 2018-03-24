@@ -19,9 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable();
             $table->string('password', 60)->nullable();
             $table->string('strava_token')->nullable();
-            $table->integer('strava_id');
+            $table->integer('strava_id')->unique();
             $table->integer('company_id')->unsigned()->nullable();
             $table->foreign('company_id')->references('id')->on('companies');
+            $table->string('pic_url')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

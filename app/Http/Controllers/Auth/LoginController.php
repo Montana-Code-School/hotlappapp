@@ -64,21 +64,23 @@ class LoginController extends Controller
     public function handleProviderCallback(Request $request)
     {
         $user = Socialite::driver('strava')->user();
+               //dd($user);
+
         $authUser = $this->findOrCreateUser($user);
-       //dd($user);
         $token = $authUser->strava_token;
-        $hotLappAppClubId = 432809;
-        $clubs = $user->user['clubs'];
-        $inDaClub = false;
+        
+        // $hotLappAppClubId = 432809;
+        // $clubs = $user->user['clubs'];
+        // $inDaClub = false;
        //dd($clubs);
-       foreach ($clubs as $club) {
-            if ($club['id'] === $hotLappAppClubId){
-                $inDaClub = true;
-            }
-       } 
-       if (!$inDaClub) {
-          return redirect()->route('welcome');
-       }
+    //    foreach ($clubs as $club) {
+    //         if ($club['id'] === $hotLappAppClubId){
+    //             $inDaClub = true;
+    //         }
+    //    } 
+    //    if (!$inDaClub) {
+    //       return redirect()->route('welcome');
+    //    }
 
            if($authUser->company_id !== null){
                 return redirect()->route('leaderboard', ['token'=>$token]);
@@ -100,7 +102,8 @@ class LoginController extends Controller
             'name'     => $user->name,
             'email'    => $user->email,
             'strava_id' => $user->id,
-            'strava_token' => $user->token
+            'strava_token' => $user->token,
+            'pic_url'   => $user->avatar
         ]);
     }
     

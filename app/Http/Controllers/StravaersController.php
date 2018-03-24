@@ -14,6 +14,8 @@ use Strava\API\Client;
 use Strava\API\Exception;
 use App\User;
 use App\Company;
+use App\Activities;
+
 
 
 
@@ -46,8 +48,10 @@ class StravaersController extends Controller
             $service = new REST($request->token, $adapter);  // Define your user token here.
             $client = new Client($service);
             $athlete = $client->getAthlete($id = null);
-            $members = $client->getClubMembers(432809);
-            $member_activities = $client->getClubActivities(432809);
+            $athleteActivities = $client->getAthleteActivities();
+            $this->createNewActivities($athleteActivities);
+            dd();
+            // $member_activities = $client->getClubActivities(432809);
             $companies = Company::all(['name', 'id']);
             $users = User::all(['strava_id', 'company_id']);
                 return view('pages.leaderboard')->with(['club_members' => $members, 'activities' => $member_activities, 'companies' => $companies, 'users' => $users]);
@@ -63,4 +67,19 @@ class StravaersController extends Controller
         $companies = Company::all(['name', 'id']);
         return view('pages.stravaers', ['companies' => $companies, 'userId' => $request->authUserId]);
     }
+
+    public function createNewActivities($activities) {
+        foreach($activities as $activity) {
+            $existingActivity = Activities::where('strava_activity_id', $activity['id'])->first();
+            if (!$existingActivity) {
+                Activities::create([
+                    'user_id'     => $activity['athlete']['id'],
+                    'distance'    => $activity['distance'],
+                    'date' => $activity['start_date_local'],
+                    'strava_activity_id' => $activity['id']
+                ]);
+            }
+        }  
+    }
+
 }
