@@ -13,7 +13,9 @@ class AddProfilepicTable extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('pic_url');
+        });
     }
 
     /**
@@ -23,6 +25,8 @@ class AddProfilepicTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('users', function (Blueprint $table) {
+         $table->dropColumn('pic_url');
+        });
     }
 }
