@@ -10005,8 +10005,8 @@ header.masthead {
 header.masthead .overlay {
   position: absolute;
   background-color: #212529;
-  height: 100%;
-  width: 100%;
+  height: auto;
+  max-width: 100%;
   top: 0;
   left: 0;
   opacity: 0.3;
